@@ -10,13 +10,7 @@ test_string = "Would you, could you in a house, Would you, could you with a mous
 def make_chains(corpus):
     """Takes an input text as a string and returns a dictionary of
     markov chains."""
-    #save and split corpus on the whitespace 
-    # create empty dictionary
-    #open for loop:
-    # if not dictionary.get(tuple):
-            #dictionary[tuple] = [the word after]
-    #else
-        #d[tuple] = d[tuple].append[word that's after]
+
     split_text = corpus.split()
     markov_dictionary = {}
     for i in range(len(split_text) - 2):
@@ -36,24 +30,15 @@ def make_chains(corpus):
 test_d= make_chains(test_string)
 
 
-
-#print random.choice(test_d.keys())
-
-
 def make_text(chains):
     """Takes a dictionary of markov chains and returns random text
     based off an original text."""
-    # create list that will become random text
-    #pick starting point
-    #(random_text[0], random_text[1]) = (key_part1, key_part2)
-
-    #pick the random value of (key_part1, key_part2)
-    #add this value to random_text[2]    
-    # 
-# randomly pick one key (tuples) from the dictionary
+   
     random_text = []
 
     first_t = random.choice(chains.keys())
+
+    #Checks that the first word starts with upper case
     while str.istitle(first_t[0]) == False:
         first_t = random.choice(chains.keys())
         continue
@@ -61,43 +46,18 @@ def make_text(chains):
     random_text.append(first_t[0])
     random_text.append(first_t[1])
     
-    #print random_text
     #TODO this creates a text of 12 words, should be generalized
+    #TODO fix this so random text ends at natural break points
+      
     for i in range(10):
         current_t = random_text[i], random_text[i+1]
         if chains.get(current_t) is None:
             break
         next_value = random.choice(chains.get(current_t))
-        print next_value
         random_text.append(next_value)
-        #print random_text
-
+       
     random_text = string.join(random_text)
-    print random_text
-
-
-# pick the next word out of the value of the key, also randomly
-    # identify the new tuple
-
-    # next_value = [random.choice(chains[first_t])]
-    # print next_value
-    # random_text.append(next_value)
-    # print random_text
-
-
-
-
-
-
-
-    # Specify that we generate sentences of 5 tuples
-    # TODO fix this so random text ends at natural break points
-    # TODO fix things so random text starts at the start of a sentence
-    
-    
-
-
-#    return "Here's some random text."
+    return random_text
 
 make_text(test_d)
 
