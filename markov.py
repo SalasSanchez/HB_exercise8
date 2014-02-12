@@ -43,41 +43,38 @@ def start_sentence(chains):
     random_text.append(first_t[1])
     return random_text
 
+def make_sentence(chains):
+    #TODO Change so it will accept any n-gram
+    random_text = start_sentence(chains)
+    current_t = random_text[0], random_text[1]
+    while True: 
+        if chains.get(current_t) == None :
+            break
+        next_value = random.choice(chains.get(current_t))
+        random_text.append(next_value)
+            
+        if next_value[-1] == "." or next_value[-1]== "!" or next_value[-1]== "?":
+            break
+
+        current_t = current_t[1], next_value
+
+    return random_text
+
 def make_text(chains):
     """Takes a dictionary of markov chains and returns random text
     based off an original text."""
-    random_text = start_sentence(chains)
-    
-    #TODO this creates a text of 12 words, should be generalized
-    #TODO fix this so random text ends at natural break points
-    
-    i = 0
+    random_text = make_sentence(chains)
 
     while True:
-        current_t = random_text[i], random_text[i+1]
-        if chains.get(current_t) is None:
+        if len(string.join(random_text)) >= 70:
             break
-        
-        next_value = random.choice(chains.get(current_t))
-        random_text.append(next_value)
-        
-        if next_value[-1] == "." or next_value[-1]== "!" or next_value[-1]== "?":
-            if len(string.join(random_text)) >= 70:
+        else:
+            roll = random.randint(1,3)
+            if roll>=2:
                 break
             else:
-                roll = random.randint(1,3)
-                if roll>=2:
-                    break
-                else:
-                    sentence_starter = random.choice(chains.keys())
-                    while str.istitle(sentence_starter[0]) == False:
-                        sentence_starter = random.choice(chains.keys())
-                        continue
-                    random_text.append(sentence_starter[0])
-                    random_text.append(sentence_starter[1])
-                    i += 2
-
-        i += 1
+                random_text.extend(make_sentence(chains))
+        
     random_text = string.join(random_text)
     return random_text
 
