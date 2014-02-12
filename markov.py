@@ -2,6 +2,7 @@
 
 import sys
 import random
+import string
 
 test_string = "Would you, could you in a house, Would you, could you with a mouse Would you, could you in a box Would you, could you with a fox Would you like green eggs and ham? Would you like them, Sam I Am?"
 
@@ -53,6 +54,10 @@ def make_text(chains):
     random_text = []
 
     first_t = random.choice(chains.keys())
+    while str.istitle(first_t[0]) == False:
+        first_t = random.choice(chains.keys())
+        continue
+
     random_text.append(first_t[0])
     random_text.append(first_t[1])
     
@@ -60,13 +65,15 @@ def make_text(chains):
     #TODO this creates a text of 12 words, should be generalized
     for i in range(10):
         current_t = random_text[i], random_text[i+1]
-        next_value = random.choice(chains[current_t])
+        if chains.get(current_t) is None:
+            break
+        next_value = random.choice(chains.get(current_t))
+        print next_value
         random_text.append(next_value)
-        print random_text
+        #print random_text
 
-    #random_text.append(first_t)
-
-    #print random_text
+    random_text = string.join(random_text)
+    print random_text
 
 
 # pick the next word out of the value of the key, also randomly
