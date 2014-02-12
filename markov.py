@@ -15,6 +15,9 @@ def make_chains(corpus):
     markov_dictionary = {}
     for i in range(len(split_text) - 2):
         # -2 because the last tuple has nothing following it.
+        split_text[i] = split_text[i].strip('"')
+        split_text[i+1] = split_text[i+1].strip('"')
+        split_text[i+2] = split_text[i+2].strip('"')
         markov_tuple = split_text[i], split_text[i+1]
         #print markov_tuple
         if not markov_dictionary.get(markov_tuple):
@@ -27,51 +30,71 @@ def make_chains(corpus):
             #print "New dictionary value"+str(markov_dictionary[markov_tuple])
     return markov_dictionary
 
-test_d= make_chains(test_string)
+#test_d= make_chains(test_string)
 
-
-def make_text(chains):
-    """Takes a dictionary of markov chains and returns random text
-    based off an original text."""
-   
+def start_sentence(chains):
     random_text = []
-
     first_t = random.choice(chains.keys())
-
     #Checks that the first word starts with upper case
     while str.istitle(first_t[0]) == False:
         first_t = random.choice(chains.keys())
         continue
-
     random_text.append(first_t[0])
     random_text.append(first_t[1])
+    return random_text
+
+def make_text(chains):
+    """Takes a dictionary of markov chains and returns random text
+    based off an original text."""
+    random_text = start_sentence(chains)
     
     #TODO this creates a text of 12 words, should be generalized
     #TODO fix this so random text ends at natural break points
-      
-    for i in range(10):
+    
+    i = 0
+
+    while True:
         current_t = random_text[i], random_text[i+1]
         if chains.get(current_t) is None:
             break
+        
         next_value = random.choice(chains.get(current_t))
         random_text.append(next_value)
-       
+        
+        if next_value[-1] == "." or next_value[-1]== "!" or next_value[-1]== "?":
+            if len(string.join(random_text)) >= 70:
+                break
+            else:
+                roll = random.randint(1,3)
+                if roll>=2:
+                    break
+                else:
+                    sentence_starter = random.choice(chains.keys())
+                    while str.istitle(sentence_starter[0]) == False:
+                        sentence_starter = random.choice(chains.keys())
+                        continue
+                    random_text.append(sentence_starter[0])
+                    random_text.append(sentence_starter[1])
+                    i += 2
+
+        i += 1
     random_text = string.join(random_text)
     return random_text
 
-make_text(test_d)
+#make_text(test_d)
 
 
-# def main():
-#     args = sys.argv
+def main():
+    script, filename = sys.argv
 
-#     # Change this to read input_text from a file
-#     input_text = "Some text"
+    f = open(filename)
+    input_text = f.read()
+    f.close()
+    chain_dict = make_chains(input_text)
+    random_text = make_text(chain_dict)
+    print random_text
 
-#     chain_dict = make_chains(input_text)
-#     random_text = make_text(chain_dict)
-#     print random_text
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
 
