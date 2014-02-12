@@ -82,11 +82,15 @@ def make_text(chains):
 
 
 def main():
-    script, filename = sys.argv
+    script, filename1, filename2 = sys.argv
 
-    f = open(filename)
-    input_text = f.read()
+    f = open(filename1)
+    f2 = open(filename2)
+    input_text1 = f.read()
+    input_text2 = f2.read()
     f.close()
+    f2.close()
+    input_text = input_text1 + input_text2
     chain_dict = make_chains(input_text)
     random_text = make_text(chain_dict)
     print random_text
