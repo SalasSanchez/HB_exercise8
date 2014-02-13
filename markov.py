@@ -81,8 +81,8 @@ def make_text(chains):
         if len(string.join(random_text)) >= 70:
             break
         else:
-            roll = random.randint(1,3)
-            if roll>=2:
+            roll = random.randint(1,2)
+            if roll==1:
                 break
             else:
                 random_text.extend(make_sentence(chains))
@@ -95,6 +95,39 @@ def make_text(chains):
 #make_text(test_d)
 
 
+def sign_into_twitter():
+    consumer_key = os.environ.get("TWITTER_API_KEY")
+    consumer_secret = os.environ.get("TWITTER_API_SECRET")
+    access_token = os.environ.get("TWITTER_ACCESS_TOKEN")
+    access_secret = os.environ.get("TWITTER_ACCESS_TOKEN_SECRET")
+    api = twitter.Api(consumer_key=consumer_key,
+        consumer_secret=consumer_secret,
+        access_token_key=access_token,
+        access_token_secret=access_secret)
+    return api
+
+
+def tweet_this(tweet):
+    api = sign_into_twitter()
+    status = api.PostUpdate(tweet)
+    print status
+    pass
+
+def Output_Review(chain_dict):
+    while True:
+        tweet = make_text(chain_dict)
+        answer= raw_input("Do you want to tweet this: %s (Y/N)" %tweet)
+        if answer == "Y" or answer == "y":
+            tweet_this(tweet)  
+            print "Check your twitter feed!"
+            break
+        if answer == 'N' or answer == "n":
+            print "okay, try something else"
+            continue
+        else:
+            print "Okay, quitting out"
+            break
+
 def main():
     script, filename1, filename2, ngram = sys.argv
 
@@ -106,29 +139,12 @@ def main():
     f2.close()
     input_text = input_text1 + input_text2
     chain_dict = make_chains(input_text, int(ngram))
-    random_text = make_text(chain_dict)
-    print random_text
+    Output_Review(chain_dict)
+
+if __name__ == "__main__":
+  main()
 
 
-#if __name__ == "__main__":
- # main()
 
-def sign_into_twitter():
-    consumer_key = os.environ.get("TWITTER_API_KEY")
-    consumer_secret = os.environ.get("TWITTER_API_SECRET")
-    access_token = os.environ.get("TWITTER_ACCESS_TOKEN")
-    access_secret = os.environ.get("TWITTER_ACCESS_TOKEN_SECRET")
-    api = twitter.Api(consumer_key=consumer_key,
-        consumer_secret=consumer_secret,
-        access_token_key=access_token,
-        access_token_secret=access_secret)
-    print api.VerifyCredentials()
-
-sign_into_twitter()
-
-def tweet_this(tweet):
-    os.environ.get("TWITTER_API_KEY")
-    pass
-
-
+#tweet_this("Created during Hackbright Academy, week 2")
 
